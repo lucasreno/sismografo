@@ -156,6 +156,18 @@ CREATE TABLE IF NOT EXISTS action (
   created_at            TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+-- Estado interno do detector para a regra de abertura/fechamento (2 Ciclos).
+-- instance_id = 0 é o agregado ambiental por (flow, step). Sem FK de propósito.
+CREATE TABLE IF NOT EXISTS step_state (
+  instance_id           INTEGER NOT NULL,
+  flow_id               INTEGER NOT NULL,
+  step_id               INTEGER NOT NULL,
+  consec_anom           INTEGER NOT NULL DEFAULT 0,
+  consec_normal         INTEGER NOT NULL DEFAULT 0,
+  open_incident_id      INTEGER,
+  PRIMARY KEY (instance_id, flow_id, step_id)
+);
+
 -- Configurações simples (ex.: webhook do Google Chat para notificações).
 CREATE TABLE IF NOT EXISTS setting (
   key                   TEXT PRIMARY KEY,

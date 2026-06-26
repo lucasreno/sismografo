@@ -1,6 +1,7 @@
 // Notificação. In-app é a fonte da verdade; aqui ficam os canais de push.
 // Eventos: Incidente aberto e Sessão expirada.
 
+import notifier from "node-notifier";
 import { db } from "../db/index.js";
 
 export type NotifyEvent =
@@ -36,6 +37,15 @@ export async function notify(event: NotifyEvent): Promise<void> {
       : `🔒 Sismógrafo: Sessão expirada na instância "${event.instanceName}" — requer reautenticação.`;
 
   console.log(`[notify] ${text}`);
-  // TODO: notificação de desktop do SO.
+  desktop("Sismógrafo", text);
   await sendGChat(text);
+}
+
+/** Notificação de desktop do SO (best-effort; ignora ambientes sem display). */
+function desktop(title: string, message: string): void {
+  try {
+    notifier.notify({ title, message });
+  } catch (err) {
+    console.error("[notify] Falha na notificação de desktop:", err);
+  }
 }
