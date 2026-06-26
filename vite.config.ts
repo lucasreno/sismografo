@@ -13,7 +13,10 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      "/api": "http://localhost:3000",
+      // Regex âncora com a barra: casa /api/... mas NÃO o módulo /api.ts
+      // (o cliente REST src/ui/api.ts, importado como ./api.js, é servido
+      // como /api.ts e seria engolido por uma regra de prefixo "/api").
+      "^/api/": "http://localhost:3000",
     },
   },
 });
